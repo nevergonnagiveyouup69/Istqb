@@ -1,0 +1,814 @@
+ When testing check for these:
+
+Check design for alignment issues
+Check for validation issues and text overflow
+Check if when click button multiple api calls are being made
+Check if non clickable elements are clickable
+Check for dimensions 1024 px to 720 px and 1280p to 800 px
+Check when changing screen resolution 
+Button should be disabled when same data is added
+Check this also “泽东 test 東海林賢蔵Борис Николаевич Ельцин  ابن خلدون Ærøskøbing แม
+For mongo db check if this is accepted`~!@#$%^&()[],.'|"<>-/*-+?\   
+Check if connected feature is breaking when you change this feature for ex one part is compulsory then the other part is breaks if not compulsory 
+Check if buttons are spam clickable 
+Check for multiple different devices (small and big) if there 
+Check for padding issues
+Check if space is added for field if it is accepting 
+Check if space is being striped when values are entered
+Check if invalid values are entered into the field if it works
+Check if there is pagination issues if next button is clickable at start and end of the page 
+Check at the bottom of the page if it is being cut off 
+Check if any values are being cut off at the bottom or top of the page
+Check when i close or open the page any issues with the page data or page information
+Check outlook, gmail for any issues
+Check if the page is has any thing that need to be constant when pressed are being consistent when closed
+Check if colour is consistent with the design
+Check words are consistent with design
+Check if the page has any downloadable things the page remains consistent with the rest of the design and values also
+Check if the size of the values or images are same as the design 
+Check if the design is not consistent
+Check for consistency with the rest of the application
+Check if the value selected is already being check or checked or preselected 
+Check if values need to change for admin and merchant side
+Check if there are any maths calculation issues and if there are any reflection on any other pages
+Check if there are any graphs the values stay consistent
+Check if there are any bread crumb issues 
+Check if there any multiple options that do not require the other option then If a is required and b and c are not required but selected then it should not be selected
+Check if proper error message is being displayed for valid, invalid and result screens 
+Check for spelling mistakes
+Check in multiple different browser like firefox, opera, edge
+Check for font and size issues for words 
+Check for issues by MonKey testing
+
+
+PATHS PROMPTS:
+7830
+
+Generate concise Gherkin syntax examples for general button interactions based on context. Use a first-person perspective, starting with "When I click this button." For positive outcomes, include "Given I am on this screen" or "Then I should see this screen" or "Then I should be redirected to this screen." Also, include "Then I should receive a message stating that 'example'." Adapt the number of examples based on context, incorporating happy paths and unhappy paths. Break down scenarios if there are more than 3 or 4 details; otherwise, keep it concise using "And" to divide details. Always use "When I click the [Button Name] button" for button interactions. Additionally, format multiple data entries in a more concise manner (e.g., use "And I enter a valid email address, phone number, and mobile number"). Ensure that error or success messages are consistently displayed as "I receive a message stating that 'message'."
+Replace instances like "my email address, phone number, and mobile number should be updated" with "Then I should receive a message stating that 'details are updated'."
+
+Consider the specified Conditions of Satisfaction (COS) for the Gherkin syntax. Provide all possible scenarios and scenario outlines. Include invalid scenarios in Gherkin examples.
+
+When you are ready, say yes and I will enter the scenarios.  
+Think step by step.chrome
+
+
+SETPATH:
+
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+
+export ANDROID_HOME=/usr/lib/android-sdk
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+Emulator:
+
+npm run android:dev
+
+./emulator_bdd.sh  
+
+Run tests:
+
+npm run cucumber
+npm run unit-test
+
+
+npx cucumber-js --import test --config test/intergration-testing/Flow_1/cucumber.js 
+
+Generate Apk:
+
+cd android && ./gradlew assembleDevRelease && cd ..
+
+Install Pod:
+
+cd ios 		(press enter then)
+pod install
+npx eslint .
+
+
+OTP ARCM:
+
+981256
+
+
+PROMPT REFINEMENT:
+
+I want you to become my prompt engineer. Your goal is to help me craft the best possible prompt for my needs. This prompt will be used by you, ChatGPT. You will follow the following processes.
+
+1. Your first response will ask me what the prompt should be about. I will provide my answer, but we will need to improve it through continual iterations by going through the next steps.
+
+2. Based on my input, you will generate 2 sections. a) Revised prompt (provide your rewritten prompt. it should be clear, concise, and easily understood by you), b) Questions (ask any relevant questions pertaining to what additional information is needed from me to improve the prompt).
+
+3. We will continue this iterative process with me providing additional information to you and you updating the prompt in the Revised prompt section until I say we are done.
+
+
+LAMBDA TEST (PASSWORD):
+
+devops@7edge.in
+DevOps!7EDGE
+
+
+SITE2GYM (PASSWORD) FOR BACKEND TESTING:
+anusha.k9875@gmail.com
+
+Test@12345678
+https://employees-dev.site2gym.com/admin/login
+
+HELCIUM PAYMENT CARD DETAILS:
+
+CARD NAME: Mastercard
+CARD NO: 5413330089099130
+EXPIRY DATE: 01/25
+CSV: 100
+
+
+
+payload = {            
+cardHolderName: 'John',            
+amount: "0.01",            
+cardHolderAddress:"New",            
+cardHolderPostalCode:"60023",            
+cardNumber:"4111111111111111",            
+cardCVV:"123",            
+cardExpiryMonth:"12",            
+cardExpiryYear:"28"            
+// Add more payload data as needed        
+};
+
+https://devdocs.helcim.com/docs/test-credit-card-numbers
+
+RUNNING BDD IN THE NEW APPROACH:
+node watchCucumber.js --feature tests/unit-testing/RR-15/features/request_receipt.feature
+
+RUNNING BDD FOR ENTIRE UNIT TEST FILE:
+node bdd_unit_testing_0.js
+
+RUNNING PIPELINE LOCALLY:
+pm2 kill
+npm run build 
+npm install -g pm2
+export NODE_OPTIONS=--max-old-space-size=8192
+pm2 start server.js
+npx cucumber-js --config features/Flow1_Support/cucumber.js
+pm2 kill
+
+
+CODE COVERAGE:
+
+npm run generate_report
+MaisonQRadmin!7EDGE
+neola.dias@7edge.com
+
+
+ADMIN LOGIN:
+https://admin-dev.maisonqr.net/
+-7xjazoo
+dalva+admin@7edge.com
+
+CUSTOMER LOGIN:
+Abc@1234
+2abdulmufeed2@gmail.com
+
+Org user:
+ORG000004091 
+
+ACCOUNTS:
+
+URL: Click here
+Username: kaushal.r+admin@7edge.com
+Auto-Generated Password: Hb(VLH3r
+
+harshith.kumar@7edge.com
+QuU3A6p9
+
+kaushalrag3122001@gmail.com
+bl-tL9.5
+
+
+Email ID : kaushal.r@7edge.com
+Password : OkYLN5xG
+
+npm run generate_report
+
+URL: Click here
+Username: kaushal.r+employee@7edge.com
+Auto-Generated Password: tukOtfDpVlyzG6P
+
+SHELL SCRIPTING:
+
+ADDING PERMISSION: chmod <filename>
+WRITING THING USING NANO: nano <filename>
+NEW FILE: touch <filename>
+LIST PERMISSIONS: ls -l
+RUNNING SCRIPTS: bash <filename>
+
+Write the happy paths and unhappy paths for the following (Think step by step). Just ADD the happy and unhappy paths for the data without extra headings and subheadings. At the start write "Acceptance Criteria" heading, then the happy and unhappy paths. Unhappy paths are conditions that are not possible in any circumstances and follow this instead of the normal defination
+
+SBT TODAY:
+123-RR
+124-RR
+RR-48
+MSM-151
+ 
+TESTCASE:
+MSM-534
+MSM-738(IF NOT WRITTEN)
+RR-45
+RR-49
+RR-47
+
+forticlient vpn connect kaushal --user=kaushal.r
+
+User name
+Password
+kaushal.r 
+&*Blredge5
+
+
+
+
+
+
+
+sudo apt-get --only-upgrade install google-chrome-stable
+sudo apt-get update
+-7xjazoo
+
+is resolution important 2mb total no of images 10, level 4, 4 rooms, level
+KILL INFINITE ANIMATION (DETOX only works for mobile features not webview):
+
+adb shell "settings put global window_animation_scale 0.0"
+adb shell "settings put global transition_animation_scale 0.0"
+adb shell "settings put global animator_duration_scale 0.0"
+
+./emulator_device.sh     
+
+npx cucumber-js --dry-run
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Share your Cucumber Report with your team at https://reports.cucumber.io     │
+│                                                                              │
+│ Command line option:    --publish                                            │
+│ Environment variable:   CUCUMBER_PUBLISH_ENABLED=true                        │
+│                                                                              │
+│ More information at https://cucumber.io/docs/cucumber/environment-variables/ │
+│                                                                              │
+│ To disable this message, add this to your ./cucumber.js:                     │
+│ module.exports = { default: '--publish-quiet' }                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+
+Just check if these are issues:
+Phone no needs country code (gift of health)
+Employee login autofill color fix
+Time off hours the button is transparent
+
+Padding Issues:
+Time off hours scroll needs to be fixed
+Contact us page customer mail is not clickable still
+Club real time staff hours should be clickable
+Live chat screen logs out of the application
+Pay dues pencil and dollar should have padding
+UPdate billing card holder name should not be space
+Order history from and to and filter should have padding
+Billing address should not allow only space for all fields
+
+Doubts for arcm:
+How to add patients from the admin side
+KK Board:
+Login 
+Add perfernce
+List perference
+Delete “
+Update password
+Reset password
+Logout
+
+BUGS:
+
+Time stamp should be first 
+Check a calendar
+freq=6 {10:00,11:00,12:00,1:00,2:00,3:00}
+10:00 delay 1h
+11:00
+10:20 + delay 1h
+roundup(11:20) = 11:30
+
+
+Provide profile
+Patient listing
+List preferences
+Historical data
+
+
+
+
+
+
+
+
+Examples for the code issues in masion qr
+
+DEAD CODE:
+src/CommonMethods CognitoData.js
+src/CommonMethods S3DownloadHook.js
+src/CommonMethods checkPrivilege.js
+src/CommonMethods pushImageToS3.js
+src/CommonMethods pushOrRemoveElement.js
+src/components Notfound.jsx
+src/components/Animation AnimatedPage.jsx
+src/components/Checkbox index.jsx
+src/components/CustomOverLay index.jsx
+src/components/DateRangePicker index.jsx
+src/components/Shimmer ListingShimmer.jsx
+
+
+
+BDD Issues:
+src/App.jsx:- Implement logout
+src/components NoDataPage.jsx
+src/components/Confirmationpopup index.jsx
+src/components/FileUploadInput NftUpload.jsx
+src/components/Layout/Sidebar index.jsx
+src/components/MatchnotFound matchnotfound.jsx
+
+
+
+NO FIXABLE:
+src/components/OtpInput index.jsx:- this can’t be handled because we can’t paste data in bdd
+src/components/ErrorBoundary ErrorUI.jsx
+
+NOT SURE Or NEED MORE CONTEXT ASK DHANUSH:
+All files / src/CommonMethods HandleNoStore.jsx
+ src/CommonMethods LoginAsMerchant.jsx
+src/CommonMethods S3UploadHook.js
+Src/CommonMethods TermsAndConditions.jsx
+src/components/BulkUpload BulkUpload.jsx
+src/components/CardHeader index.jsx
+src/components/CustomDateRangePicker Index.jsx
+src/components/CustomErrorPopup CustomErrorPopup.jsx
+src/components/CustomMonthYearPicker index.jsx
+src/components/SwitchStores index.jsx
+
+
+
+METAMASK PHASE:
+Fine
+Relax
+Silly
+Lock
+Toy
+Pioneer
+Express
+Cluster
+Cash
+Twin
+Essence
+normal
+
+In the otp screen the text needs to be in a single line.
+In enforce otp is off and otp preference is there the login should be handled.
+Azure pipeline password: YC5f.ALeLD?'aQ+\
+
+
+src
+src/CommonMethods
+src/components
+src/components/BulkUpload
+src/components/CardHeader
+src/components/Checkbox
+src/components/Confirmationpopup
+src/components/Context
+src/components/CustomDateRangePicker
+src/components/CustomErrorPopup
+src/components/CustomMonthYearPicker
+src/components/ErrorBoundary
+src/components/ErrorMessage
+src/components/FileUploadInput
+src/components/FloatinInput
+src/components/HandleNORoute
+src/components/Layout
+src/components/Layout/Sidebar
+src/components/Loader
+src/components/MatchnotFound
+src/components/MerchantRoleList
+src/components/OtpInput
+src/components/PageLoader
+src/components/Pagination
+src/components/PasswordValidator
+src/components/Shimmer
+src/components/StatusIndicator
+src/components/SwitchStores
+src/components/Toast
+src/components/TopBar
+src/components/Topbarsupport
+src/components/UploadProgress
+src/config
+src/pages/Dashboard
+src/pages/Dashboard/components
+src/pages/Dashboard/components/NoItemsAddedCart
+src/pages/Dashboard/components/NoOrderPlaced
+src/pages/Dashboard/components/NumberOfProductsScanned
+src/pages/Dashboard/components/ProductWithNFT
+src/pages/Dashboard/components/TotalSalesAmount
+
+Not sure about these as the test coverage is not correct
+
+src/pages/ManageEmployees
+src/pages/ManageEmployees/MerchantRoleSelection
+src/pages/ManageEmployees/components
+
+src/pages/ManageEmployees/components/BulkEmployee
+src/pages/ManageEmployees/components/EmployeeList/table
+src/pages/ManageEmployees/components/EmployeeListTopBar
+src/pages/ManageStores
+src/pages/ManageStores/StoreList
+src/pages/ManageStores/StoreList/components/BulkUploadStores
+src/pages/ManageStores/StoreList/components/table
+src/pages/ManageStores/components
+src/pages/ManageStores/components/Category
+src/pages/ManageStores/components/Category/table
+src/pages/ManageStores/components/CryptoSettlements
+src/pages/ManageStores/components/CryptoSettlements/Components
+src/pages/ManageStores/components/CustomerOrders
+src/pages/ManageStores/components/CustomerOrders/Components
+src/pages/ManageStores/components/CustomerOrders/ViewOrders
+src/pages/ManageStores/components/CustomerOrders/ViewOrders/Components
+src/pages/ManageStores/components/CustomerReservedCart
+src/pages/ManageStores/components/CustomerReservedCart/components
+src/pages/ManageStores/components/CustomerReservedCart/table
+src/pages/ManageStores/components/Customercart
+src/pages/ManageStores/components/Customercart/table
+src/pages/ManageStores/components/ManageNFT
+src/pages/ManageStores/components/ManageNFT/components
+src/pages/ManageStores/components/Product
+src/pages/ManageStores/components/Product/components/BulkProduct
+src/pages/ManageStores/components/Product/table
+src/pages/ManageStores/components/StoreSettings
+src/pages/ManageStores/components/StoreSettings/components
+src/pages/ManageStores/components/UnsettledSettlements
+src/pages/ManageStores/components/UnsettledSettlements/components
+
+Not sure about these as the test coverage is not correct
+
+
+src/pages/Supports
+src/pages/Supports/Component
+src/pages/Supports/Component/Empty
+src/pages/Supports/Component/table
+src/pages/Supports/SupportFilter
+src/pages/Supports/viewlist
+
+src/pages/auth
+src/pages/auth/components
+src/pages/auth/components/Registration
+src/pages/auth/components/SocialLogin
+src/redux
+src/routes
+src/services
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+build
+build/app
+build/app/Animations
+build/app/Button
+build/app/Components/Shimmer
+build/app/Components/Shimmerotp.js
+build/app/Components/Spinner
+build/app/Components/StoreShimmer
+build/app/Components/ToastMessage
+build/app/ErrorMessage
+build/app/Navigation Bar
+build/app/Otp (not 100% complete because not sure it is possible to increase the coverage)
+build/app/OtpGFB (not possible)
+build/app/Social Login (not possible)
+build/app/auth (not possible i think)
+build/app/aws
+build/app/cart
+build/app/cart/components
+build/app/commonmethods
+build/app/commonmethods/LoadingDots
+build/app/commonmethods/NotFound
+build/app/commonmethods/SlidingModal
+build/app/commonmethods/TermsCondition
+build/app/commonmethods/ToastMessages
+build/app/config
+build/app/context
+build/app/crypto-payment
+build/app/customer-information
+build/app/dataservices
+build/app/find-store(scrollneeds to be immpelmented)
+build/app/forgot-password
+build/app/forgot-password/components
+build/app/how-it-works
+build/app/login
+build/app/login/SocialLogin
+build/app/my-account
+build/app/my-nft
+build/app/my-nft/components
+build/app/my-orders
+build/app/my-orders/[slug]
+build/app/my-reservations
+build/app/my-transactions
+build/app/product
+build/app/product/[slug]
+build/app/qr-code
+build/app/raise-ticket
+build/app/register
+build/app/set-new-password
+build/app/shimmers
+build/app/view-store/[slug]
+build/helpers
+build/redux
+
+
+
+
+
+__/\\\\\\\\\\\\\_____/\\\\___________/\\\\______/\\\\\\\\\_____
+_\/\\\/////////\\\_____\/\\\\\\_________/\\\\\\____/\\\///////\\\___
+ _\/\\\____\/\\\_____\/\\\_//\\\_____/\\_\//\\\___\///____\//\\\__
+  _\/\\\\\\\\\\\\\/_______\/\\\__\///\\\/\\\/___\/\\\_________/\\\/___
+   _\/\\\/////////________\/\\\___\///\\\/____\/\\\________/\\\//_____
+    _\/\\\_____________\/\\\____\///_____\/\\\_____/\\\//________
+     _\/\\\_____________\/\\\____________\/\\\___/\\\/___________
+      _\/\\\_____________\/\\\____________\/\\\__/\\\\\\\\\\\\\\\_
+       _\///______________\///_____________\///__\///////////////__
+
+
+npm install chromedriver@latest --force
+
+
+
+
+Rt: 1.23
+2.25
+
+
+28.5521
+
+Claimer side
+
+
+Wave —->
+-wave app (android  and ios)
+-wave portal (web app)
+
+Accessing wave
+Web application
+Mobile app
+Desktop
+Email
+Via link
+		
+
+https://ppds.atlassian.net/wiki/spaces/WH/overview
+
+
+Test charter website
+Job applying automater
+Automatic crypto or stock buying bot
+
+
+
+
+
+BUgs in prod:
+The store does not display any changes to the store when opened the first time
+In customer store.
+https://www.loom.com/share/88cfbf9766424becbac311701b855446
+The login with face book and google no working
+https://www.loom.com/share/52868079c4334433ba273e23fdb39c84
+When i search for invalid characters it does not show not found screen 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { sleep } from 'k6'
+import http from 'k6/http'
+
+
+export const options = {
+ cloud: {
+   distribution: { 'amazon:us:ashburn': { loadZone: 'amazon:us:ashburn', percent: 100 } },
+   apm: [],
+ },
+ thresholds: {},
+ scenarios: {
+   Scenario_1: {
+     executor: 'constant-vus',
+     gracefulStop: '30s',
+     duration: '3m45s',
+     vus: 40,
+     exec: 'scenario_1',
+   },
+ },
+}
+
+
+export function __main__() {
+ let response
+
+
+ // Automatically added sleep
+ sleep(1)
+}
+
+
+export function scenario_1() {
+ http.get('https://qa-admin.maisonqr.net/orders-purchases?page_number=1')
+ sleep(1)
+}
+
+
+
+
+
+
+
+Version 2.21
+
+
+
+Bugs list:
+test_user_new_user - fix this one
+Add user privileges screen privileges 
+Collposed form when adding nodes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# REACT_APP_STAGE = 'dev'
+# REACT_APP_AUTH_DOMAIN = 'wave-hospitality-dev.eu.auth0.com'
+# REACT_APP_CLIENT_ID =  '7Im6kuIGAhmezQ80wEHQOzjUm83skKoY'
+# REACT_APP_API_URL='https://api.wave-htv-dev.tpvai.com/graphql'
+# REACT_APP_GOOGLE_MAP_API= 'AIzaSyC4WSWC-54HKB4KOWRiNQIWBWbJ-kammbI'
+# REACT_APP_SIGNAGE_AUTH_DOMAIN = 'tpvision-dev.eu.auth0.com',
+# REACT_APP_SIGNAGE_CLIENT_ID = 'MfpzIGT0VaxkzPAi0qYY786ObYhkBxO2'
+
+REACT_APP_STAGE = 'local'
+REACT_APP_AUTH_DOMAIN = 'wave-hospitality-dev.eu.auth0.com'
+REACT_APP_CLIENT_ID =  '7Im6kuIGAhmezQ80wEHQOzjUm83skKoY'
+REACT_APP_API_URL='https://api.wave-htv-qa.tpvai.com/graphql'
+REACT_APP_GOOGLE_MAP_API= 'AIzaSyC4WSWC-54HKB4KOWRiNQIWBWbJ-kammbI'
+REACT_APP_SIGNAGE_AUTH_DOMAIN = 'tpvision-dev.eu.auth0.com',
+REACT_APP_SIGNAGE_CLIENT_ID = 'MfpzIGT0VaxkzPAi0qYY786ObYhkBxO2'
+
+# REACT_APP_STAGE = 'dev'
+# REACT_APP_AUTH_DOMAIN = 'wave-hospitality-dev.eu.auth0.com'
+# REACT_APP_CLIENT_ID =  '7Im6kuIGAhmezQ80wEHQOzjUm83skKoY'
+# REACT_APP_API_URL='https://htv-api.wave-dev.ppds.com/graphql'
+# REACT_APP_GOOGLE_MAP_API= 'AIzaSyC4WSWC-54HKB4KOWRiNQIWBWbJ-kammbI'
+# REACT_APP_SIGNAGE_AUTH_DOMAIN = 'tpvision-dev.eu.auth0.com',
+# REACT_APP_SIGNAGE_CLIENT_ID = 'MfpzIGT0VaxkzPAi0qYY786ObYhkBxO2'
+# REACT_APP_REGION=eu-central-1
+# REACT_APP_TOKEN='eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJ2OFZlUmVOUFVyT19zRU1UanVJYyJ9.eyJodHRwczovL2h0di53YXZlLnBwZHMuY29tL3JvbGVzIjpbXSwiaXNzIjoiaHR0cHM6Ly93YXZlLWhvc3BpdGFsaXR5LWRldi5ldS5hdXRoMC5jb20vIiwic3ViIjoiYXV0aDB8NjdiMmJkZDRmOGY0ODIwMGJkNTA1MThkIiwiYXVkIjpbImh0dHBzOi8vd2F2ZS1ob3NwaXRhbGl0eS1kZXYuZXUuYXV0aDAuY29tL2FwaS92Mi8iLCJodHRwczovL3dhdmUtaG9zcGl0YWxpdHktZGV2LmV1LmF1dGgwLmNvbS91c2VyaW5mbyJdLCJpYXQiOjE3Mzk3NjcyOTUsImV4cCI6MTczOTg1MzY5NSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCB1cGRhdGU6Y3VycmVudF91c2VyX21ldGFkYXRhIiwiZ3R5IjoicGFzc3dvcmQiLCJhenAiOiI3SW02a3VJR0FobWV6UTgwd0VIUU96alVtODNza0tvWSJ9.G5nh7W47tqBQ3a_shFR2TSZuFjJvWIBdICONnBGj_O0A4M4hSJypUvnn5QmLzEFPk6C1qMDi8Zu6jyk_FdojcWSLAJ-p2I3ruUDnN5-HU45LC4EowRlONjubFg79S6jU6IaOialodsa4zST7Vp0si2EzQgSBnVFdygNP0c_sNdRNixX5RM0_t1KsdCObwfMF3ytF3J87EtqWLCLFgSIgK1Ru-BSEcf85RjtC_Dt5PjM2R0oMG8L5YPcy-Kzd9IPkqnzy8eKB2k8J_kfrVJ5qLENm4LwJXYhq0iecPswXfmEQY2CwlYqhFo0YdaBVVkkgSmvKT-RrGF3kU2l6DThjNg'
+
+
+
+# API_URL="https://api.wave-htv-qa.tpvai.com/graphql"
+# REACT_APP_API_URL="https://api.wave-htv-qa.tpvai.com/graphql"
+# AUTH0_CLIENT_ID="cZdj25d1tI5cAmDxTFy7VeEp7WS0MDyG"
+# REACT_APP_AUTH0_CLIENT_ID="cZdj25d1tI5cAmDxTFy7VeEp7WS0MDyG"
+# AUTH0_DOMAIN="wave-hospitality-dev.eu.auth0.com"
+# REACT_APP_AUTH0_DOMAIN="wave-hospitality-dev.eu.auth0.com"
+# AUTH_DOMAIN="wave-hospitality-dev.eu.auth0.com"
+# REACT_APP_AUTH_DOMAIN="wave-hospitality-dev.eu.auth0.com"
+# CLUSTER_NAME_ECS="wave-cluster"
+# REACT_APP_CLUSTER_NAME_ECS="wave-cluster"
+# MONGO_DB_NAME="qa"
+# REACT_APP_MONGO_DB_NAME="qa"
+# MONGO_URI="mongodb://wavemaster:masterwave@qa.cluster-c7k20mqi4kve.eu-central-1.docdb.amazonaws.com:27017/qa?authMechanism=SCRAM-SHA-1&authSource=qa&retryWrites=false&directConnection=true"
+# REACT_APP_MONGO_URI="mongodb://wavemaster:masterwave@qa.cluster-c7k20mqi4kve.eu-central-1.docdb.amazonaws.com:27017/qa?authMechanism=SCRAM-SHA-1&authSource=qa&retryWrites=false&directConnection=true"
+# REGION="eu-central-1"
+# REACT_APP_REGION="eu-central-1"
+# SERVICE_NAME_ECS="wave-ecs-service"
+# REACT_APP_SERVICE_NAME_ECS="wave-ecs-service"
+# STAGE="qa"
+# REACT_APP_STAGE="qa"
+# AUTH0_CLIENT_SECRET="KeSwvWxlhes3du9kwyZOKCOc5J_JdtIVfxe4MK0z1JEH_UlRRfaYOPcNJPreYUdT"
+# REACT_APP_AUTH0_CLIENT_SECRET="KeSwvWxlhes3du9kwyZOKCOc5J_JdtIVfxe4MK0z1JEH_UlRRfaYOPcNJPreYUdT"
+# BUCKET_NAME="wave-assets-qa"
+# REACT_APP_BUCKET_NAME="wave-assets-qa"
+# CDN="https://qa-cdn.wave-htv-qa.tpvai.com"
+# REACT_APP_CDN="https://qa-cdn.wave-htv-qa.tpvai.com"
+# COMMON_LIB_ARN="arn:aws:lambda:eu-central-1:296062548191:layer:nodejs-wave:101"
+# REACT_APP_COMMON_LIB_ARN="arn:aws:lambda:eu-central-1:296062548191:layer:nodejs-wave:101"
+# EC_INSTANCE_ID="i-0d5a240e17656851b"
+# REACT_APP_EC_INSTANCE_ID="i-0d5a240e17656851b"
+# MONGO_DB="qa"
+# REACT_APP_MONGO_DB="qa"
+# MONGO_USERNAME="wavemaster"
+# REACT_APP_MONGO_USERNAME="wavemaster"
+# REPO_URI_ECR="296062548191.dkr.ecr.eu-central-1.amazonaws.com/wave-repo"
+# REACT_APP_REPO_URI_ECR="296062548191.dkr.ecr.eu-central-1.amazonaws.com/wave-repo"
+# SECURITY_GROUP_ID="sg-0c921aca908356977"
+# REACT_APP_SECURITY_GROUP_ID="sg-0c921aca908356977"
+# SUBNET_ID="subnet-0d2ce8d95464260f1"
+# REACT_APP_SUBNET_ID="subnet-0d2ce8d95464260f1"
+# API_ENDPOINT="api.wave-htv-qa.tpvai.com"
+# REACT_APP_API_ENDPOINT="api.wave-htv-qa.tpvai.com"
+# CLIENT_ID="7Im6kuIGAhmezQ80wEHQOzjUm83skKoY"
+# REACT_APP_CLIENT_ID="7Im6kuIGAhmezQ80wEHQOzjUm83skKoY"
+# DISTRIBUTION_ID="E3BZL0T41H7EJK"
+# REACT_APP_DISTRIBUTION_ID="E3BZL0T41H7EJK"
+# MONGO_MAX_POOLSIZE="10"
+# REACT_APP_MONGO_MAX_POOLSIZE="10"
+# MONGO_MIN_POOLSIZE="1"
+# REACT_APP_MONGO_MIN_POOLSIZE="1"
+# MONGO_PASSWORD="masterwave"
+# REACT_APP_MONGO_PASSWORD="masterwave"
+# REPO_NAME_ECR="wave-repo"
+# REACT_APP_REPO_NAME_ECR="wave-repo"
+# REPO_URI_ECR_TAG="latest"
+# REACT_APP_REPO_URI_ECR_TAG="latest"
+# S3_BUCKET="wave-web-application-qa"
+# REACT_APP_S3_BUCKET="wave-web-application-qa"
+# WEB_URL="wave-htv-qa.tpvai.com"
+# REACT_APP_WEB_URL="wave-htv-qa.tpvai.com"
+
