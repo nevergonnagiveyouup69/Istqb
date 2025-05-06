@@ -1,0 +1,302 @@
+React Native(Expo) Test automation using Appium
+
+Step 1. Install appium, appium doctor
+	npm install appium appium-doctor 
+Step 2. Install Android Studio https://developer.android.com/studio. Set up an emulator. Create an environment variable. 
+Ubuntu: 
+sudo snap install android-studio –stable
+//create environment variable 
+export ANDROID_HOME=/home/swasthik/Android/Sdk
+//save the path 
+PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+//to apply changes
+source~/.bashrc 
+//verify the environment variable 
+echo $ANDROID_HOME
+Step 3. run command ‘npx wdio config’ to set up the test runner and automation 
+npx wdio config
+The above command will prompt for many things. Select the following to continue (the selected option is in BOLD)
+===============================
+🤖 WDIO Configuration Wizard 🧙
+===============================
+
+✔ A project named "halspan" was detected at "/home/loaner/Documents/Work/Halspan/Halspan", correct? yes
+✔ What type of testing would you like to do? E2E Testing - of Web or Mobile Applications
+✔ Where is your automation backend located? On my local machine
+✔ Which environment you would like to automate? Mobile - native, hybrid, and mobile web apps, on Android or iOS
+✔ Which mobile environment you'd like to automate? Android - native, hybrid, and mobile web apps, tested on emulators and real devices
+    > using UiAutomator2 (https://www.npmjs.com/package/appium-uiautomator2-driver)
+✔ Which framework do you want to use? Cucumber (https://cucumber.io/)
+✔ Do you want to use Typescript to write tests? no
+✔ Do you want WebdriverIO to autogenerate some test files? yes
+✔ What should be the location of your feature files? yes
+✔ What should be the location of your step definitions? yes
+✔ Do you want to use page objects (https://martinfowler.com/bliki/PageObject.html)? yes
+✔ Where are your page objects located?
+(/home/loaner/Documents/Work/Halspan/Halspan/features/pageobjects/**/*.js) yes
+✔ Which reporter do you want to use? spec
+✔ Do you want to add a plugin to your test setup? yes
+✔ Would you like to include Visual Testing to your setup? For more information see 
+https://webdriver.io/docs/visual-testing! yes
+✔ Do you want to add a service to your test setup? yes
+? Do you want me to run `npm install` (Y/n) yes
+If the installation fails for any reason manually install all the libraries (use ‘- -force’ if neccessary)
+npm install @wdio/local-runner@latest
+npm install @wdio/cucumber-framework@latest
+npm install @wdio/spec-reporter@latest
+npm install @wdio/visual-service
+npm install appium-uiautomator2-driver
+
+Step 4. Once the above steps are done, a ‘wdio.config.js’ file will be created at the project's root.
+If the ‘wdio.config.js’ is not generated. Create manually at the root of the project.
+We need to modify and update the file with the .apk path, emulator name, platform, and other dependencies in the capabilities section
+exports.config = {
+runner: 'local',
+   port: 4723,
+   path: '/wd/hub',
+   specs: ['./features/**/*.feature'], // path of feature files
+   exclude: [],
+   maxInstances: 1,
+   capabilities: [{
+       platformName: 'Android',
+       'appium:deviceName': 'Pixel_6_Pro_API_35', // emulator name
+       'appium:automationName': 'UiAutomator2', // installed UI Automator
+       'appium:app': 'android/app/build/outputs/apk/release/app-release.apk', // Relative path of the application
+       'appium:appWaitActivity': 'com.halspan.app.develop.MainActivity', // First screen of application
+       'appium:androidInstallTimeout': 60000,
+       'appium:newCommandTimeout': 2000,
+       'appium:autoGrantPermissions': true, // Automatically grants permissions
+       'appium:autoDismissAlerts': true, // Automatically dismisses any alert dialogs
+       'appium:skipUnlock': true, // Skip unlocking device screen
+   }],
+   before: async function () {
+       // Add a 10-second delay after the app launches
+       console.log('Waiting for 10 seconds to ensure the app is ready...');
+       await browser.pause(10000);
+   },
+   logLevel: 'debug',
+   framework: 'cucumber',
+   cucumberOpts: {
+       require: ['./features/step_definations/**.js'], //path of step definitions
+       ignoreUndefinedDefinitions: false,
+       backtrace: false,
+       requireModule: [],
+       dryRun: false,
+       strict: false,
+       timeout: 60000,
+   },
+   // reporters: ['spec', ['allure', { outputDir: 'reports/allure-results', disableWebdriverStepsReporting: true }]],
+   services: ['appium'],
+   appium: {
+       command: 'appium',
+       args: {
+           logLevel: 'error',
+       },
+   },
+};
+
+
+
+Step 5. Create the application build and store it as .apk
+// install npm packages
+npm install - -force
+//create the prebuild
+npm run prebuild
+//if the prebuild fails
+npm run prebuild:clean
+//navigate to android folder and create the gradle file
+cd android 
+./gradlew assembleRelease
+//if the create gradle fails,clean the existing gradle files
+./gradlew clean
+This will create a .apk file which will be used for testing in emulator
+Step 5. Create a folder structure for the features and step definitions. 
+features
+	↳step_definations
+		↳xxx.js
+	↳unit_testing
+		↳xxx.feature
+wdio.config.js
+//login.feature
+ Feature: Login to Halspan
+Scenario: Successful logging into halspan
+   		Given Tim is in welcome screen
+   		When Tim clicks on login
+   		Then Tim should be navigated to login screen
+   		When Tim enters valid username
+   		When Tim enters valid password
+   		When Tim submits the login form
+   		Then Tim should be successfully logged in
+   		When Tim clicks on setting menu
+  		When Tim logs out of the halspan
+  		When Tim confirms to logout
+   		Then Tim is in welcome screen
+ 	@login
+ 	Scenario: Successful login using tag
+  		When Tim clicks on setting menu
+   		When Tim logs out of the halspan
+   		When Tim confirms to logout
+   		Then Tim is in welcome screen
+Step 6. Selectors in appium 
+Appium has a restricted set of selectors. Here we can use Xpath, testID, and uiSelector from wdio. In react native code you define the testID to an element, but when rendering in the android it will renamed as resource-id. To fetch the Xpath and uiSelector we have to use Appium Inspector. 
+Once all the setup is done ensure you run the emulator. IMP!
+Command: emulator -avd {Emualtor_name}
+(Note 1: all the commands expect ./gradlew will be executed from the root project)
+(Note 2: If the if any command fails due to ANDROID_HOME path not defined. Execute ‘export ANDROID_HOME=/home/swasthik/Android/Sdk’ & ‘PATH=$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools’ from any path of the project)
+Steps to install appium inspector:
+(Note 1: It will be in the downloads folder)
+Visit Appium  Inspector release page
+Download ‘Appium-Inspector-2024.12.1-linux-x86_64.AppImage’  from assests
+Update the file permission to execute.  ie ‘x’,
+chmod +x Appium-Inspector-2024.12.1-linux-x86_64.AppImage
+Once you execute the permission command, extract the AppImage, using ‘./Appium-Inspector-2024.12.1-linux-x86_64.AppImage --appimage-extract’, it will provide a folder named ‘squashfs-root’. 
+Copy or Cut the folder and put it into your project directory.
+Open a new terminal, and run the below command to change ownership and permission. (loaner@swasthik-t490-7el107:~/Documents/Work/Halspan/Halspan$ )
+sudo chown root:root /home/loaner/Documents/Work/Halspan/Halspan/squashfs-root/chrome-sandbox
+sudo chmod 4755 /home/loaner/Documents/Work/Halspan/Halspan/squashfs-root/chrome-sandbox
+Open 3 terminals, 
+a. In one terminal, make sure the ANROID_HOME is exported. And run the emulator with ‘emulator -avd {Emulator_name}. 
+b. Start the appium server with command ‘appium’.  If the there is any other active appium server use ‘pkill -f appium’. And restart the server.
+c. run command ‘./squashfs-root/AppRun’.  To start the appium inspector.
+When you Run the command ‘./squashfs-root/AppRun’. This opens a dialog box of the appium inspector
+
+Fill in the JSON data to open the application in Appium Inspector
+1. Platform : Android/iOS
+2. Device Name : Emulator Name
+3. App : path of the .apk to test/inspect
+4. Automation Name : UiAutmator2, which I am using.
+
+Example JSON data: 
+	{
+		"platformName": "Android",
+		"deviceName": "Pixel_6_Pro_API_35",
+		"app": "/home/loaner/Documents/Work/Halspan/Halspan/android/app/build/outputs/apk/release/app-release.apk",
+		"automationName": "UiAutomator2"
+}
+Click on start session, it might take some time to load. 
+
+There are 2 main options in Inspector, ‘Element selector’ and ‘Click & Tap action’
+Selectors can fetched directly from this section.
+
+(Note 1: before starting the session in appium Inspector. Make sure the configurations are done properly.
+Note 2: 
+Step 7: defining the selectors in the step definitions
+1. testID (resource-id):
+const welcomeText = await $("//android.widget.TextView[@resource-id='welcome_text']");
+2. Xpath: 
+const loginButton = await $('//android.widget.TextView[@text="Log in"]');
+	3. uiSelector: 
+const element = await $('android=UiSelector().className("com.horcrux.svg.PathView").instance(17)' );
+Here is an example step definition: 
+const { Given, When, Then } = require('@wdio/cucumber-framework');
+const { expect } = require('chai');
+
+
+Given('Tim is in welcome screen', async function () {
+ const welcomeText = await $("//android.widget.TextView[@resource-id='welcome_text']");
+ await welcomeText.waitForDisplayed({ timeout: 2000 });
+ const text = await welcomeText.getText();
+ expect(text).to.equal('Welcome');
+});
+
+
+
+
+
+
+When('Tim clicks on login',async function () {
+const loginButton = await $('//android.widget.TextView[@text="Log in"]');
+await loginButton.waitForDisplayed({ timeout: 2000 });
+await loginButton.click();
+
+
+});
+
+
+Then('Tim should be navigated to login screen',async function () {
+ // Add a pause to allow the WebView to load completely
+ console.log('Waiting for the WebView to load...');
+ await browser.pause(20000); // Adjust the timeout as needed
+
+
+ // Locate the username input field using XPath
+ const usernameField = await $(
+   '//android.webkit.WebView[@text="Log in | Halspan Mobile App [staging]"]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View[1]/android.widget.EditText'
+ );
+ // Wait for the username field to be displayed
+ await usernameField.waitForDisplayed({ timeout: 1000 });
+});
+
+
+When('Tim enters valid username', async function () {
+ const usernameField = await $(
+   '//android.webkit.WebView[@text="Log in | Halspan Mobile App [staging]"]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View[1]/android.widget.EditText'
+ );
+ await usernameField.setValue('rajesh.s@7edge.com');
+ await usernameField.waitForDisplayed({ timeout: 3000 });
+});
+
+
+When('Tim enters valid password', async function () {
+ const passwordField = await $(
+   '//android.webkit.WebView[@text="Log in | Halspan Mobile App [staging]"]/android.view.View/android.view.View/android.view.View/android.view.View/android.view.View[2]/android.view.View[2]/android.widget.EditText'
+ );
+ await passwordField.setValue('rajesh.s@7edgE');
+ await passwordField.waitForDisplayed({ timeout: 3000 });
+});
+
+
+When('Tim submits the login form', async function () {
+ const continueButton = await $(
+   '//android.widget.Button[@text="Continue"]'
+ );
+ await continueButton.waitForDisplayed({ timeout: 2000 });
+ await continueButton.click();
+});
+
+
+Then('Tim should be successfully logged in',async function () {
+ await browser.pause(10000);
+ const loginButton = await $('//android.widget.TextView[@text="Dashboard"]');
+ await loginButton.waitForDisplayed({ timeout: 5000 });
+});
+
+
+When('Tim clicks on setting menu', async function(){
+ const element = await $(
+   'android=UiSelector().className("com.horcrux.svg.PathView").instance(17)'
+ );
+ await element.click(); // Example action
+ await browser.pause(2000);
+ });
+
+
+When('Tim logs out of the halspan', async function(){
+ const logoutButton = await $(
+   '//android.widget.TextView[@text="Logout"]'
+ ); // Locate using text
+ await logoutButton.click();
+ });
+
+
+When('Tim confirms to logout', async function(){
+ const element = await $(
+   'android=UiSelector().text("Logout").instance(1)'
+ );
+ await element.click();
+ await browser.pause(5000);
+});
+
+
+
+ Step 8: Execution of feature file 
+Make sure that the emulator is actively running on your system. Now run the command 
+‘npx wdio ./wdio.config.js --spec features/unit_testing/login.feature’.
+
+
+Automation demo link: mobile_automation_demo.mp4
+
+
+
+
+
