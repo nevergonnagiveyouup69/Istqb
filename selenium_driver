@@ -1,0 +1,659 @@
+/* eslint-disable security/detect-non-literal-fs-filename */
+/* eslint-disable max-len */
+const {
+    After,
+    Before,
+    AfterAll,
+    BeforeAll,
+    AfterStep,
+    setDefaultTimeout,
+} = require("@cucumber/cucumber");
+const chrome = require("selenium-webdriver/chrome");
+const { By, until } = require("selenium-webdriver");
+
+const chromedriver = require("chromedriver");
+const axios = require("axios");
+const { createCoverageMap } = require("istanbul-lib-coverage");
+const fs = require("fs");
+const path = require("path");
+const { faker } = require("@faker-js/faker");
+const { login } = require('../step-definations/Merchant/merchant_login')
+require("dotenv").config();
+let service = new chrome.ServiceBuilder(chromedriver.path).build();
+let options = new chrome.Options();
+options.addArguments("--disable-dev-shm-usage");
+options.addArguments("--no-sandbox");
+options.addArguments("--disable-features=VizDisplayCompositor");
+options.addArguments("enable-automation");
+options.addArguments("--disable-dev-shm-usage");
+options.addArguments("--headless"); //comment sthis line of code to run in local chrome browser
+options.addArguments("--window-size=1920,1080");
+options.addArguments("--disable-gpu");
+options.addArguments("--disable-extensions");
+options.addArguments("--dns-prefetch-disable");
+options.addArguments("enable-features=NetworkServiceInProcess");
+// chrome.setDefaultService(new chrome.ServiceBuilder(chromedriver.path).build())
+//uncomment this above line of code to run in local chrome browser
+global.driver = chrome.Driver.createSession(options, service);
+setDefaultTimeout(80000);
+
+const {
+    createCategory,
+    createProduct,
+    deleteProduct,
+    createCart,
+    createOrder,
+    store_delete,
+    createReserveCart
+} = require("../API/index");
+
+const { emailTemplatePayload } = require('../bdd_payload/emailTemplatePayload');
+const { createEmailTemplate } = require('../bdd_api/emailTemplate');
+const { smsTemplatePayload } = require('../bdd_payload/smsTemplatePayload');
+const { createSMSTemplate } = require('../bdd_api/sms_Template');
+
+let created_product_IDS = [];
+let products_array =[];
+BeforeAll(async function () {
+    console.log("inside fn");
+    // driver = driver.withCapabilities(webdriver.Capabilities.chrome())
+    //  .setChromeOptions(new chrome.Options().headless()).build()
+    await driver.manage();
+    await driver.get(`http://localhost:3000`);
+    await driver.wait(until.elementLocated(By.id("root")));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    global.current_process_name = faker.string.alpha({
+        count: 10,
+        casing: "upper",
+    });
+    created_product_IDS = [];
+    console.log("Current process name:", global.current_process_name);
+
+    global.is_user_logged_in = false;
+
+    const worldParametersIndex = process.argv.indexOf('--world-parameters');
+    let worldParameters;
+    if (worldParametersIndex !== -1 && process.argv.length > worldParametersIndex + 1) {
+        worldParameters = JSON.parse(process.argv[worldParametersIndex + 1]);
+        console.log('worldParameters',worldParameters)
+        global.perform_login = worldParameters['login'];
+    }
+
+    try {
+        global.__coverage__ = await driver.executeScript("return __coverage__;");
+        global.coverageMap = createCoverageMap(__coverage__);
+    } catch (error) {
+        throw new Error(
+            "::: __coverage__ ::: Coverage Mapping Object Not Found :::"
+        );
+    }
+});
+
+Before(async function () {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+});
+
+const saveLocalStorageData = async (localStorageFilePath) => {
+    const localStorageData = await driver.executeScript('return JSON.stringify(localStorage);');
+    fs.writeFileSync(localStorageFilePath, localStorageData, 'utf-8');
+    console.log('Local Storage Data saved to:', localStorageFilePath);
+};
+
+const loadLocalStorageData = async (localStorageFilePath) => {
+    if (fs.existsSync(localStorageFilePath)) {
+        const localStorageData = JSON.parse(fs.readFileSync(localStorageFilePath, 'utf-8'));
+        
+        // Set localStorage items
+        await Promise.all(Object.keys(localStorageData).map(async (key) => {
+            const value = localStorageData[key];
+            await driver.executeScript(`localStorage.setItem('${key}',${JSON.stringify(value)});`);
+        }));
+
+        await driver.get('http://localhost:3000')
+        // add timeout here 5 sec
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+
+
+        // Verification step: Check if localStorage is set properly
+        const isLocalStorageUpdated = await verifyLocalStorageData(localStorageData);
+        
+        // If not updated, set it again
+        if (!isLocalStorageUpdated) {
+            console.log('LocalStorage is not set correctly. Retrying...');
+            await Promise.all(Object.keys(localStorageData).map(async (key) => {
+                const value = localStorageData[key];
+                await driver.executeScript(`localStorage.setItem('${key}', ${JSON.stringify(value)});`);
+            }));
+            await driver.executeScript('window.location.reload();');
+        }
+    } else {
+        console.log('Could not find local storage data');
+    }
+};
+
+// Helper function to verify localStorage data
+const verifyLocalStorageData = async (expectedLocalStorageData) => {
+    const localStorageInBrowser = await driver.executeScript(() => {
+        const data = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            data[key] = localStorage.getItem(key);
+        }
+        return data;
+    });
+
+    // Compare the localStorage data with the expected data
+    return JSON.stringify(expectedLocalStorageData) === JSON.stringify(localStorageInBrowser);
+};
+
+Before('@login', async function(){
+    const localStorageFilePath = path.join(__dirname, 'localStorageData.json');
+    if (global.is_user_logged_in === false && global.perform_login === true) {
+        await login();
+        await saveLocalStorageData(localStorageFilePath);
+        global.is_user_logged_in = true;
+    } else if (global.is_user_logged_in === false) {
+        await loadLocalStorageData(localStorageFilePath);
+        global.is_user_logged_in = true;
+    } else {
+        return;
+    }
+})
+
+After(async function () {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+});
+
+After(function (scenario) {
+    console.log('scenario.result.status',scenario.result.status)
+    let failed_scenarios = path.join(__dirname, 'failed_scenarios');
+    if (!fs.existsSync(failed_scenarios)) {
+        fs.mkdirSync(failed_scenarios);
+    }
+    if (scenario.result.status === 'FAILED') {
+        var world = this;
+        return driver.takeScreenshot().then(function(screenShot, error) {
+            if (!error) {
+                world.attach(screenShot, "image/png");
+                failed_scenarios = path.join(failed_scenarios,`${scenario.pickle.id}_${scenario.pickle.name}.png`)
+                fs.writeFile(failed_scenarios, screenShot, 'base64', (err) => {
+                    if (err) {
+                        console.error('Error writing coverage data:', err);
+                    } else {
+                        console.log('Coverage data has been written to:', failed_scenarios);
+                    }
+                });
+            }
+        });
+    }
+});
+
+Before("@logout", async function () {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await driver.executeScript(`window.localStorage.clear();`);
+    await driver.executeScript(`window.location.reload();`);
+});
+
+After("@request_password", async function () {
+    let payload = {
+        email: "prakhyath+9696@7edge.com",
+    };
+    let axiosOptions = {
+        "Content-Type": "application/json",
+    };
+    try {
+        let data = await axios.post(
+            `${process.env.VITE_DOMAIN_NAME_FRONT_END}/v1/merchant-users/forgot-password`,
+            payload,
+            { headers: axiosOptions }
+        );
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        let forgotpassword_token = data.data.data;
+        await driver.get(
+            `http://localhost:3000/set-new-password?token=${forgotpassword_token}`
+        );
+    } catch (err) {
+        console.log("API Error", err);
+    }
+});
+
+Before("@perform_logout", async function () {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await driver.executeScript(`window.localStorage.clear();`);
+    await driver.executeScript(`window.location.reload();`);
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+});
+
+Before("@wait", async function () {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await driver.executeScript(`window.location.reload();`);
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+});
+
+After('@capture_existing_sku', async function(){
+    global.created_product = {
+        "sku": global.created_sku,
+    }
+})
+
+Before('@add-product-to-cart', async function(){
+
+    // fetch token
+    const keys = Object.keys(await driver.executeScript(`return window.localStorage`))
+    let token;
+    let store_info = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('Store'))`);
+    console.log(store_info['email_address'])
+
+    for(key1 of keys){
+        if(key1.includes('idToken')){
+            token = await driver.executeScript(`return window.localStorage.getItem('${key1}')`);
+        }
+    }
+
+    const API_HEADERS = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": 'application/json',
+    };
+    try{
+        global.product_list = await axios.get(`${process.env.VITE_DOMAIN_NAME_FRONT_END}/v1/products/list/${encodeURI(store_info['email_address'])}?page_number=1`, {
+            headers: API_HEADERS
+        })
+    }catch(err){
+        // console.log('err', err)
+    }
+
+    let url = await driver.getCurrentUrl()
+    console.log(global.product_list.data.data)
+    let cartID = url.split('/')
+    let new_cartID = cartID[cartID.length -1]
+    let product_list = global.product_list.data.data
+    console.log('cart id', cartID)
+    global.payload  = {
+        "product_id": product_list[0]._id,
+        "cart_id": new_cartID,
+        "store_email_address": store_info['email_address']
+    }
+    try{
+        global.response = await axios.post(`${process.env.VITE_DOMAIN_NAME_FRONT_END}/v1/carts/create`, global.payload, {
+            headers: API_HEADERS
+        })
+    }catch(err){
+        console.log('err', err)
+    }
+})
+
+Before('@delete-cart', async function(){
+
+    // fetch token
+    console.log(store_info['email_address'])
+    let token;
+    for(key1 of keys){
+        if(key1.includes('idToken')){
+            token = await driver.executeScript(`return window.localStorage.getItem('${key1}')`);
+        }
+    }
+
+    const API_HEADERS = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": 'application/json',
+    };
+
+    let url = await driver.getCurrentUrl()
+    console.log(global.product_list.data.data)
+    let cartID = url.split('/')
+    try{
+        global.response = await axios.delete(`${process.env.VITE_DOMAIN_NAME_FRONT_END}/v1/carts/${cartID}`, {
+            headers: API_HEADERS
+        })
+    }catch(err){
+        console.log('err', err)
+    }
+})
+
+Before('@add_new_store', async function(){
+    // fetch token
+    const keys = Object.keys(await driver.executeScript(`return window.localStorage`))
+    let token;
+    let userData;
+    let store_info = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('Store'))`);
+    for(key1 of keys){
+        if(key1.includes('idToken')){
+            token = await driver.executeScript(`return window.localStorage.getItem('${key1}')`);
+        }
+        if(key1.includes('userData')){
+            userData = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('${key1}'))`);
+        }
+    }
+    const merchant_email_address = userData.UserAttributes.find(item => item.Name === "email");
+    const store_email = `prakhyath+${faker.string.alphanumeric(5)}@7edge.com`
+    const API_HEADERS = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": 'application/json',
+    };
+    global.payload = {
+        "name": "Sweet Shop",
+        "location": "karanatka",
+        "url": "http://dalvastores.com",
+        "address": "789 Mall Road",
+        "city": "Retailville",
+        "postal_code": "54321",
+        "phone_number": "8989898989",
+        "email_address": store_email,
+        "merchant_email_address": merchant_email_address['Value']
+    }
+    console.log('payload', payload)
+    try{
+        global.response = await axios.post(`${process.env.VITE_DOMAIN_NAME_FRONT_END}/v1/stores/create`, global.payload, {
+            headers: API_HEADERS
+        })
+    }catch(err){
+        console.log('err', err)
+    }
+})
+
+Before('@create_customer_orders', async function(){
+    // fetch token
+    let store_info = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('Store'))`);
+
+    console.log('store_info', store_info)
+    const categories_payload = {
+        "category_name": faker.string.alphanumeric(15),
+        "store_email_address": store_info['email_address']
+    }
+    try{
+        global.category_response = await createCategory(categories_payload)
+    }catch(err){
+        console.log('err', err)
+    }
+
+    for(i = 0; i < 5; i++){
+        const product_payload = {
+            "sku": faker.string.alphanumeric(10),
+            "brand_name": "Eliana Buckner",
+            "availability": "true",
+            "description": "Similique ut aut tem",
+            "listing_price": "1000",
+            "selling_price": "900",
+            "discount": 10,
+            "attributes": {
+                "Ivan Keith": "Dolor odit ut ad qui"
+            },
+            "images": [],
+            "videos": [],
+            "nft": "false",
+            "name": "Felicia Reed",
+            "category": global.category_response.data.data._id,
+            "store_email_address": store_info['email_address']
+        }
+        try{
+            global.product_response = await createProduct(product_payload)
+            created_product_IDS.push({
+                "product_id": product_response.data.data._id,
+                "quantity": 1
+            })
+        }catch(err){
+            console.log('err', err)
+        }
+    }
+    const cart_payload = {
+        "product_id": created_product_IDS
+    }
+
+    console.log('cart_payload',cart_payload)
+    try{
+        global.cart_response = await createCart(cart_payload)
+    }catch(err){
+        console.log('err', err)
+    }
+
+    const create_order_payload = {
+        cart_id: global.cart_response.data.data._id,
+        customer_name: "Bharath",
+        customer_email_address: "bharath.shet@7edge.com",
+        phone_number: "9731292993",
+        payment_type: 'Crypto Based Payment'
+    }
+
+    try{
+        global.order_response = await createOrder(create_order_payload)
+        console.log('response', global.order_response)
+    }catch(err){
+        console.log('err', err)
+    }
+})
+
+Before('@create_reserve_cart', async function(){
+    // fetch token
+    let store_info = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('Store'))`);
+
+    const categories_payload = {
+        "category_name": faker.string.alphanumeric(15),
+        "store_email_address": store_info['email_address']
+    }
+    try{
+        global.category_response = await createCategory(categories_payload)
+    }catch(err){
+        console.log('err', err)
+    }
+
+    for(i = 0; i < 5; i++){
+        const product_payload = {
+            "sku": faker.string.alphanumeric(10),
+            "brand_name": "Eliana Buckner",
+            "availability": "true",
+            "description": "Similique ut aut tem",
+            "listing_price": "1000",
+            "selling_price": "900",
+            "discount": 10,
+            "attributes": {
+                "Ivan Keith": "Dolor odit ut ad qui"
+            },
+            "images": [],
+            "videos": [],
+            "nft": "false",
+            "name": "Felicia Reed",
+            "category": global.category_response.data.data._id,
+            "store_email_address": store_info['email_address']
+        }
+        try{
+            global.product_response = await createProduct(product_payload)
+            created_product_IDS.push({
+                "product_id": product_response.data.data._id,
+                "quantity": 1
+            })
+        }catch(err){
+            console.log('err', err)
+        }
+    }
+    const cart_payload = {
+        "product_id": created_product_IDS
+    }
+
+    console.log('cart_payload',cart_payload)
+    try{
+        global.cart_response = await createCart(cart_payload)
+        console.log(global.cart_response?.data?.data?.number,'jujujujujujujujuj')
+    }catch(err){
+        console.log('err', err)
+    }
+    try {
+        let request_body = {
+            cart_id: global.cart_response?.data?.data?._id,
+        }
+        global.reserve_cart = await createReserveCart(request_body)
+        console.log(global.reserve_cart?.data?.data,'kkokokkokokok')
+    } catch (error) {
+        
+    }
+    // const create_order_payload = {
+    //     cart_id: global.cart_response.data.data._id,
+    //     customer_name: "Bharath",
+    //     customer_email_address: "bharath.shet@7edge.com",
+    //     phone_number: "9731292993",
+    //     payment_type: 'Crypto Based Payment'
+    // }
+
+    // try{
+    //     global.order_response = await createOrder(create_order_payload)
+    //     console.log('response', global.order_response)
+    // }catch(err){
+    //     console.log('err', err)
+    // }
+})
+
+Before('@add_products_to_list', async function(){
+    // fetch token
+    let store_info = await driver.executeScript(`return JSON.parse(window.localStorage.getItem('Store'))`);
+
+    const categories_payload = {
+        "category_name": faker.string.alphanumeric(15),
+        "store_email_address": store_info['email_address']
+    }
+    try{
+        global.category_response = await createCategory(categories_payload)
+    }catch(err){
+        console.log('err', err)
+    }
+    for(i = 0; i < 15; i++){
+        const product_payload = {
+            "sku": faker.string.alphanumeric(10),
+            "brand_name": "Eliana Buckner",
+            "availability": "true",
+            "description": "Similique ut aut tem",
+            "listing_price": "1000",
+            "selling_price": "900",
+            "discount": 10,
+            "attributes": {
+                "Ivan Keith": "Dolor odit ut ad qui"
+            },
+            "images": [],
+            "videos": [],
+            "nft": "false",
+            "name": "Felicia Reed",
+            "category": global.category_response.data.data._id,
+            "store_email_address": store_info['email_address']
+        }
+        try{
+            global.product_response = await createProduct(product_payload)
+            products_array.push(product_response.data.data._id)
+        }catch(err){
+            console.log('err', err)
+        }
+    }
+})
+
+After('@delete_list_products', async function(){
+    try {
+        const deletePromises = products_array.map(async (data) => {
+            await deleteProduct(data)
+            products_array = products_array.filter((id) => id !== data);
+        });
+
+        await Promise.all(deletePromises);
+
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
+})
+After('@delete_created_products', async function(){
+    try {
+        const deletePromises = created_product_IDS.map(async (data) => {
+            await deleteProduct(data['product_id'])
+            created_product_IDS = created_product_IDS.filter((id) => id['product_id'] !== data['product_id']);
+        });
+
+        await Promise.all(deletePromises);
+
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
+})
+
+Before('@add_sms_template', async function(){
+    global.SMSTemplatePayload = await smsTemplatePayload()
+    console.log('sms tempalte payload', global.SMSTemplatePayload)
+    try{
+        let response = await createSMSTemplate(global.SMSTemplatePayload)
+        console.log('response', response)
+    }catch(err){
+        console.log('Error', err)
+    }
+})
+
+Before('@add_ten_sms_template', async function(){
+    for(let i=0;i<10;i++){
+        global.SMSTemplatePayload = await smsTemplatePayload()
+        try{
+            let response = await createSMSTemplate(global.SMSTemplatePayload)
+            console.log('response', response)
+        }catch(err){
+            console.log('Error', err)
+        }
+    }
+})
+
+After('@delete_recently_created_store', async function(){
+    try {
+        const res = await store_delete(global.payload?.email_address)
+        console.log('deletedsuccess',res)
+    } catch (err) {
+        console.error('Error:', err);
+        throw err;
+    }
+})
+
+Before('@add_email_template', async function(){
+    global.emailTemplatePayload = await emailTemplatePayload()
+    console.log(global.emailTemplatePayload, "Payload123")
+    try{
+        let response = await createEmailTemplate(global.emailTemplatePayload)
+        console.log('response', response)
+    }catch(err){
+        console.log('Error', err)
+    }
+})
+
+Before('@add_ten_email_template', async function(){
+    for(let i=0;i<10;i++){
+        global.emailTemplatePayload = await emailTemplatePayload()
+        try{
+            let response = await createEmailTemplate(global.emailTemplatePayload)
+            console.log('response', response)
+        }catch(err){
+            console.log('Error', err)
+        }
+    }
+})
+
+After('@delete_customer_orders', async function(){
+    return
+})
+AfterAll(async function () {
+    const coverageDataDir = path.join(__dirname, "coverageData");
+    if (!fs.existsSync(coverageDataDir)) {
+        fs.mkdirSync(coverageDataDir);
+    }
+    const coverageDataFile = path.join(
+        coverageDataDir,
+        `coverage_${global.current_process_name}.json`
+    );
+    const coverageData = global.coverageMap.toJSON();
+    // Write coverage data to file
+    fs.writeFile(coverageDataFile, JSON.stringify(coverageData), (err) => {
+        if (err) {
+            console.error("Error writing coverage data:", err);
+        } else {
+            console.log("Coverage data has been written to:", coverageDataFile);
+        }
+    });
+    await driver.quit();
+});
+AfterStep(async function () {
+    const updatedCoverageData = await driver.executeScript(
+        "return __coverage__;"
+    );
+    const updatedCoverageMap = createCoverageMap(updatedCoverageData);
+    global.coverageMap.merge(updatedCoverageMap);
+});
